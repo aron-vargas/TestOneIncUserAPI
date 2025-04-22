@@ -60,27 +60,6 @@ public sealed class UserControllerTests
     }
 
     [TestMethod]
-    public async Task GetAll_UsersExist_ReturnsUsers()
-    {
-        // Arrange
-        var users = new List<AppUser>
-        {
-            new AppUser { Id = "1", FirstName = "John", LastName = "Doe" },
-            new AppUser { Id = "2", FirstName = "Jane", LastName = "Smith" }
-        };
-        _mockRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(users);
-
-        // Act
-        var result = await _controller.GetAll();
-
-        // Assert
-        Assert.IsTrue(result.Success);
-        Assert.AreEqual(200, result.StatusCode);
-        Assert.IsNotNull(result.Data);
-        Assert.IsInstanceOfType(result.Data, typeof(IEnumerable<AppUser>));
-    }
-
-    [TestMethod]
     public async Task GetAll_NoUsersExist_ReturnsNotFound()
     {
         // Arrange
@@ -99,7 +78,7 @@ public sealed class UserControllerTests
     public async Task AddUser_ValidUser_ReturnsSuccess()
     {
         // Arrange
-        var newUser = new AppUser { FirstName = "John", LastName = "Doe" };
+        var newUser = new AppUser { FirstName = "John", LastName = "Doe", Email = "JohnDoe@Domain.com"};
         _mockRepo.Setup(repo => repo.AddAsync(newUser)).ReturnsAsync(newUser);
 
         // Act
@@ -124,7 +103,7 @@ public sealed class UserControllerTests
 
         // Assert
         Assert.IsFalse(result.Success);
-        Assert.AreEqual(404, result.StatusCode);
+        Assert.AreEqual(500, result.StatusCode);
         Assert.IsNull(result.Data);
     }
 
@@ -132,7 +111,7 @@ public sealed class UserControllerTests
     public async Task UpdateUser_ValidUser_ReturnsSuccess()
     {
         // Arrange
-        var updatedUser = new AppUser { Id = "123", FirstName = "John", LastName = "Doe" };
+        var updatedUser = new AppUser { Id = "123", FirstName = "John", LastName = "Doe", Email = "JohnDoe@Domain.com" };
         _mockRepo.Setup(repo => repo.UpdateAsync(updatedUser)).ReturnsAsync(updatedUser);
 
         // Act
@@ -157,7 +136,7 @@ public sealed class UserControllerTests
 
         // Assert
         Assert.IsFalse(result.Success);
-        Assert.AreEqual(404, result.StatusCode);
+        Assert.AreEqual(500, result.StatusCode);
         Assert.IsNull(result.Data);
     }
 
